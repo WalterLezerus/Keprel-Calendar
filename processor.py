@@ -7,16 +7,14 @@ import config
 # ── Auth ──────────────────────────────────────────────────────────────────────
 
 def login_user(username: str, password: str):
-    """
-    Verify credentials and create a session.
-    Returns a dict with user info and session token, or None on failure.
-    """
     user = data_manager.get_user_by_username(username)
     if not user:
         return None
 
     if not bcrypt.checkpw(password.encode("utf-8"), user["password_hash"].encode("utf-8")):
         return None
+
+    data_manager.delete_sessions_for_user(user["user_id"])  # add this line
 
     token = secrets.token_hex(32)
     data_manager.create_session(user["user_id"], token)

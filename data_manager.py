@@ -87,6 +87,14 @@ def get_user_by_session(token: str):
     finally:
         db.close()
 
+def delete_sessions_for_user(user_id: int):
+    db = get_db()
+    try:
+        db.query(Session).filter(Session.user_id == user_id).delete()
+        db.commit()
+    finally:
+        db.close()
+
 
 def create_session(user_id: int, token: str):
     db = get_db()
